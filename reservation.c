@@ -14,25 +14,21 @@ void show_empty_seats_num (struct Seat Plane[], int seats)
 //Shows the empty seats on the plane
 void show_empty_seats (struct Seat Plane[], int seats)
 {
-    if (count_empty_seats(Plane, seats) == 0)
+    int count = 0;
+    for (int i = 0; i < seats; i++)
     {
-        printf("\nWe're sorry, we have no seats availabe currently.\n");
-    }
-
-    else
-    {
-        printf("\nCurrently the available seats are:\n\n");
-
-        int count = 0;
-        for (int i = 0; i < seats; i++)
+        if (Plane[i].assigned == 0)
         {
-            if (Plane[i].assigned == 0)
-            {
-                count++;
-                printf("Seat #%d: %s\n", count, Plane[i].id);
-            }   
+            if (i == 0)
+                printf("\nCurrently the available seats are:\n\n");
+
+            count++;
+            printf("Seat #%d: %s\n", count, Plane[i].id);
         }   
     }
+
+    if (count == 0)
+        printf("\nWe're sorry, we have no seats availabe currently.\n");
 }
 
 //Sorts seats alphabetically
@@ -64,25 +60,22 @@ void alpha_sort_seats (struct Seat Plane[], int seats)
 //Assigns a client to a seat
 void assign_seat (struct Seat Plane[], int seats)
 {
-    if (count_empty_seats(Plane, seats) == 0)
+    int count = 0;
+    
+    for (int i = 0; i < seats; i++)
     {
-        printf("\nWe're sorry, we have no seats available right now.\n");
-    }
-
-    else
-    {
-        int count = 0;
-
-        printf("\nAvailable seats:\n");
-        for (int i = 0; i < seats; i++)
+        if (Plane[i].assigned == 0)
         {
-            if (Plane[i].assigned == 0)
-            {
-                count++;
-                printf("Seat #%d: %s\n", count, Plane[i].id);
-            }
+            if (i == 0)
+                printf("\nAvailable seats:\n");
+
+            count++;
+            printf("Seat #%d: %s\n", count, Plane[i].id);
         }
-        
+    }
+    
+    if (count > 0)
+    {
         int choice = 0;
         printf("\nPlease enter the number to choose the seat you want:\n");
         while (scanf("%d", &choice) != 1 || choice < 1 || choice > count)
@@ -127,31 +120,34 @@ void assign_seat (struct Seat Plane[], int seats)
 
         printf("\n%s %s you have been assigned seat %s\n", Plane[index].fname, Plane[index].lname, Plane[index].id);
     }
+
+    else
+    {
+        printf("\nWe're sorry, we have no seats available right now.\n");
+    }    
 }
 
 //Removes assigned status from a seat
 void unassign_seat (struct Seat Plane[], int seats)
 {
-    if (count_empty_seats(Plane, seats) == seats)
+    int count = 0;
+
+    for (int i = 0; i < seats; i++)
     {
-        printf("\nNo seats have been assigned yet.\n");
+        if (Plane[i].assigned == 1)
+        {
+            if (i == 0)
+                printf("\nAssigned seats:\n");
+
+            count++;
+            printf("Seat #%d: %s | %s %s\n", count, Plane[i].id, Plane[i].fname, Plane[i].lname);
+        }
     }
 
-    else
+    if (count > 0)
     {
-        int count = 0;
-
-        printf("\nAssigned seats:\n");
-        for (int i = 0; i < seats; i++)
-        {
-            if (Plane[i].assigned == 1)
-            {
-                count++;
-                printf("Seat #%d: %s | %s %s\n", count, Plane[i].id, Plane[i].fname, Plane[i].lname);
-            }
-        }
-
         int choice = 0;
+
         printf("\nPlease enter the number to choose the seat you want to unassign:\n");
         while (scanf(" %d", &choice) != 1 || choice < 1 || choice > count)
         {
@@ -178,7 +174,11 @@ void unassign_seat (struct Seat Plane[], int seats)
         printf("\n%s %s has been unassigned from seat %s\n", Plane[index].fname, Plane[index].lname, Plane[index].id);
         Plane[index].fname[0] = '\0';
         Plane[index].lname[0] = '\0';
-
+    }
+    
+    else
+    {
+        printf("\nNo seats have been assigned yet.\n");
     }
 }
 
